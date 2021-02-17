@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
  master.vm.box = "debian/contrib-buster64"
  master.vm.hostname = "Master"
  master.vm.network :public_network, bridge: "Intel(R) Dual Band Wireless-AC 7260", ip: "192.168.10.230"
- master.ssh.insert_key = false
+ master.ssh.insert_key = true
  config.vm.provider :virtualbox do |v|
     v.customize ["modifyvm", :id, "--memory", 2048]
     v.customize ["modifyvm", :id, "--cpus", 2]
@@ -24,7 +24,7 @@ end
  node1.vm.box = "debian/contrib-buster64"
  node1.vm.hostname = "Node1"
  node1.vm.network :public_network, bridge: "Intel(R) Dual Band Wireless-AC 7260",  ip: "192.168.10.231"
- node1.ssh.insert_key = false
+ node1.ssh.insert_key = true
  config.vm.provider :virtualbox do |v|
    v.customize ["modifyvm", :id, "--memory", 4096]
    v.customize ["modifyvm", :id, "--cpus", 4]
@@ -36,7 +36,7 @@ end
  node2.vm.box = "debian/contrib-buster64"
  node2.vm.hostname = "Node2"
  node2.vm.network :public_network, bridge: "Intel(R) Dual Band Wireless-AC 7260", ip: "192.168.10.232"
- node2.ssh.insert_key = false
+ node2.ssh.insert_key = true
  config.vm.provider :virtualbox do |v|
    v.customize ["modifyvm", :id, "--memory", 4096]
    v.customize ["modifyvm", :id, "--cpus", 4]
@@ -48,7 +48,7 @@ end
  node3.vm.box = "debian/contrib-buster64"
  node3.vm.hostname = "Node3"
  node3.vm.network :public_network, bridge: "Intel(R) Dual Band Wireless-AC 7260", ip: "192.168.10.233"
- node3.ssh.insert_key = false
+ node3.ssh.insert_key = true
  config.vm.provider :virtualbox do |v|
    v.customize ["modifyvm", :id, "--memory", 4096]
    v.customize ["modifyvm", :id, "--cpus", 4]
