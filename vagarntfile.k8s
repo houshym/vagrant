@@ -1,0 +1,83 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  
+
+#VM1: Master
+ config.vm.define "master" do |master|
+ master.vm.box = "ubuntu/focal64"
+ master.vm.hostname = "Master"
+ master.vm.network "public_network" , bridge: "Intel(R) Dual Band Wireless-AC 7260", ip: "192.168.10.100"
+ master.vm.disk :disk, size: "10GB"
+ master.vm.disk :disk, size: "20GB"
+ master.ssh.insert_key = true
+ master.vm.provider :virtualbox do |v|
+    v.customize ["modifyvm", :id, "--memory", 4096]
+    v.customize ["modifyvm", :id, "--cpus", 2]
+ end
+end
+
+#VM2: Node1
+ config.vm.define "node1" do |node1|
+ node1.vm.box = "ubuntu/focal64"
+ node1.vm.hostname = "Node1"
+ node1.vm.network "public_network" , bridge: "Intel(R) Dual Band Wireless-AC 7260",  ip: "192.168.10.101"
+ node1.vm.disk :disk, size: "10GB"
+ node1.vm.disk :disk, size: "20GB"
+ node1.ssh.insert_key = true
+ node1.vm.provider :virtualbox do |v|
+   v.customize ["modifyvm", :id, "--memory", 4096]
+   v.customize ["modifyvm", :id, "--cpus", 4]
+ end
+end
+
+#VM3: Node2
+ config.vm.define "node2" do |node2|
+ node2.vm.box = "ubuntu/focal64"
+ node2.vm.hostname = "Node2"
+ node2.vm.network "public_network",  bridge: "Intel(R) Dual Band Wireless-AC 7260", ip: "192.168.10.102"
+ node2.ssh.insert_key = true
+ node2.vm.disk :disk, size: "10GB"
+ node2.vm.disk :disk, size: "20GB"
+ node2.vm.provider :virtualbox do |v|
+   v.customize ["modifyvm", :id, "--memory", 4096]
+   v.customize ["modifyvm", :id, "--cpus", 4]
+ end
+end
+
+#VM4: Node3
+ config.vm.define "node3" do |node3|
+ node3.vm.box = "ubuntu/focal64"
+ node3.vm.hostname = "Node3"
+ node3.vm.network "public_network", bridge: "Intel(R) Dual Band Wireless-AC 7260", ip: "192.168.10.103"
+ node3.vm.disk :disk, size: "10GB"
+ node3.vm.disk :disk, size: "20GB"
+ node3.ssh.insert_key = true
+ node3.vm.provider :virtualbox do |v|
+   v.customize ["modifyvm", :id, "--memory", 4096]
+   v.customize ["modifyvm", :id, "--cpus", 4]
+ end
+end
+end
+
+
+# You can try to add the adapter: 1 to the config. Although I still find some problem with it. See if it will help you starts from somewhere.
+
+# Example:
+
+# config.vm.network "public_network", bridge: "Broadcom BCM5709C", adapter: "1", ip: "192.168.x.xx"
+# You will still have the eth1 which is host-only network...
+
+
+ 
+# Related Question
+# How to access a VirtualBox host-only 
+
+# config.vm.provision "shell",
+#   run: "always",
+#   inline: "route add default gw 192.168.0.1"
