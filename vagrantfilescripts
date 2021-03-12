@@ -1,0 +1,87 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+$script = <<-SCRIPT
+echo I am provisioning...
+#sudo apt update && sudo apt upgrade -y
+sudo apt update 
+echo -e "vagrant\nvagrant" | passwd root
+sudo -i 
+sudo swapoff -a 
+sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+echo yes | sudo apt install curl  -y
+sudo curl https://releases.rancher.com/install-docker/20.10.sh | sh
+echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
+echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config
+echo 'PermitEmptyPasswords yes' >> /etc/ssh/sshd_config
+
+systemctl restart sshd.service
+systemctl restart ssh.service
+SCRIPT
+
+Vagrant.configure("2") do |config|
+
+#VM1: Master
+ config.vm.define "master" do |master|
+ master.vm.box = "generic/debian9"
+ master.vm.hostname = "Master"
+ master.vm.network "public_network" , bridge: "Intel(R) Dual Band Wireless-AC 7260", ip: "192.168.10.100"
+ master.vm.disk :disk, size: "10GB" , name: "primary"
+ master.vm.disk :disk, size: "20GB" , name: "rook"
+ master.ssh.insert_key = true
+ master.vm.provision "shell", inline: $script
+ master.vm.provider :virtualbox do |v|
+    v.customize ["modifyvm", :id, "--memory", 2048]
+    v.customize ["modifyvm", :id, "--cpus", 2]
+ end
+end
+
+#VM2: Node1
+ config.vm.define "node1" do |node1|
+ node1.vm.box = "generic/debian9"
+ node1.vm.hostname = "Node1"
+ node1.vm.network "public_network" , bridge: "Intel(R) Dual Band Wireless-AC 7260",  ip: "192.168.10.101"
+ node1.vm.disk :disk, size: "10GB",  name: "primary"
+ node1.vm.disk :disk, size: "20GB" , name: "rook" 
+ node1.ssh.insert_key = true
+ node1.vm.provision "shell", inline: $script
+ node1.vm.provider :virtualbox do |v|
+   v.customize ["modifyvm", :id, "--memory", 2048]
+   v.customize ["modifyvm", :id, "--cpus", 2]
+ end
+end
+
+#VM3: Node2
+ config.vm.define "node2" do |node2|
+ node2.vm.box = "generic/debian9"
+ node2.vm.hostname = "Node2"
+ node2.vm.network "public_network",  bridge: "Intel(R) Dual Band Wireless-AC 7260", ip: "192.168.10.102"
+ node2.ssh.insert_key = true
+ node2.vm.disk :disk, size: "10GB", name: "primary"
+ node2.vm.disk :disk, size: "20GB" , name: "rook"
+ node2.vm.provider :virtualbox do |v|
+ node2.vm.provision "shell", inline: $script
+   v.customize ["modifyvm", :id, "--memory", 2048]
+   v.customize ["modifyvm", :id, "--cpus", 2]
+ end
+end
+
+#VM4: Node3
+ config.vm.define "node3" do |node3|
+ node3.vm.box = "generic/debian9"
+ node3.vm.hostname = "Node3"
+ node3.vm.network "public_network", bridge: "Intel(R) Dual Band Wireless-AC 7260", ip: "192.168.10.103"
+ node3.vm.disk :disk, size: "10GB" , name: "primary"
+ node3.vm.disk :disk, size: "20GB" , name: "rook"
+ node3.ssh.insert_key = true
+ node3.vm.provision "shell", inline: $script
+ node3.vm.provider :virtualbox do |v|
+   v.customize ["modifyvm", :id, "--memory", 2048]
+   v.customize ["modifyvm", :id, "--cpus", 2]
+ end
+end
+end
